@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <button id="btn">btn</button>
+
+    <div class="box">
+        <h3 id="cat">cat</h3>
+        <h3 id="dog">dog</h3>
+        <div class="person">
+            <h4 id="lili">lili</h4>
+            <h4 id="lucy">lucy</h4>
+            <h4 id="jim">jim</h4>
+        </div>
+    </div>
+
+</body>
+</html>
+<script>
+// ---- 1.在DOM元素上面扩展    
+// var get = function(id){
+//     return document.getElementById(id);
+// }
+
+// HTMLElement.prototype.hide = function(){
+//     this.style.display = 'none';
+// }
+
+// get('btn').onclick = function(){
+//     get('cat').hide();
+// }
+
+// ---- 2.在构造函数上面进行扩展
+// var Get = function (id) {
+//     this.element = document.getElementById(id);
+// }
+
+// Get.prototype.hide = function (){
+//     this.element.style.display = "none";
+// }
+
+// document.getElementById("btn").onclick = function() {
+//     new Get("cat").hide();
+//     new Get("dog").hide();	
+// };
+
+// ---- 3.暴露与重用元素获取方法, 升级，把获取dom元素放在原型上面
+// var Get = function (id) {
+//     return this.getElementById(id);
+// }
+// Get.prototype.getElementById = function(id){
+//     this.element = document.getElementById(id);
+//     return this;
+// }
+
+// Get.prototype.hide = function (){
+//     this.element.style.display = "none";
+// }
+
+// new Get("cat").hide();
+// new Get("dog").hide();	
+
+
+// ---- 4.查看Get和hide里面的this、this.ele
+// var Get = function (id) {
+//     this.ele =  document.getElementById(id);
+//     console.log(this)
+//     console.log(this.ele)
+// }
+
+// Get.prototype.hide = function (){
+//     this.ele.style.display = "none";//原型对象上面的方法是怎么找到this的
+// }
+
+// document.getElementById("btn").onclick = function() {
+//     //new Get("cat").hide();
+//     var domEle = new Get("cat");
+//     domEle.hide();
+// };
+
+// ---- 5.用 $ 获取元素
+// var Get = function (id) {
+//     return this.getId(id);
+// };
+
+// Get.prototype.getId = function(id){
+//     this.ele = document.getElementById(id);
+//     return this;
+// }
+
+// Get.prototype.hide = function(){
+//     this.ele.style.display = 'none';
+// }
+
+// var $ = function(id){
+//     return new Get(id);
+// };
+
+// var asd = $('cat');
+// console.log(asd);
+//asd.hide();
+
+// ---- 6.只能获取id元素，也要获取class, tag
+// var Get = function (select, context) {
+//     return this.getAll(select, context);
+// };
+//
+// Get.prototype.getAll = function(select, context){
+//     context = context || document;
+//     this.eleList = document.querySelectorAll(select, context);
+//     return this;
+// }
+//
+//Get.prototype.hide = function(){
+//    var i, length = this.eleList.length;
+//    for(i = 0; i < length; i++){
+//        this.eleList[i].style.display = 'none';
+//    }
+//}
+//
+//var $ = function(select, context){
+//    return new Get(select, context);
+//};
+//
+//console.log($('h3'));
+//$('h3').hide();
+
+// console.log($('div'));
+//    //Get
+//    //  ele: NodeList[2]
+//    //  0: div.box
+//    //  1: div.person
+//    //  length: 2
+//    //  __proto__: NodeList
+//    //__proto__: Object
+//    // 这里的eleList是个伪数组，所以要把他们都隐藏就要遍历
+
+
+// ---- 7.如果还其他的方法要用的遍历，for循环就重复了，扩展一个each()
+//var Get = function (select, context) {
+//    console.log(this);
+//    return this.getAll(select, context);
+//};
+//
+//Get.prototype.getAll = function(select, context){
+//    context = context || document;
+//    this.eleList = document.querySelectorAll(select, context);
+//    return this;
+//}
+//
+//Get.prototype.each = function (fn){
+//    var length = this.eleList.length;
+//    for(i = 0; i < length; i++){
+//        fn.call(this.eleList[i])
+//    };
+//    return this;
+//};
+//
+//Get.prototype.hide = function(){
+//    this.each(function (){
+//        //这里的this指向this.eleList[i]
+//        this.style.display = 'none';
+//    })
+//}
+//
+//var $ = function(select, context){
+//    return new Get(select, context);
+//};
+//
+////console.log($('h4'));
+//$('h3').hide();
+
+// ---- 8.去掉this.eleList, 把this[i] = this.eleList[i].
+//var Get = function (select, context) {
+//    return this.init(select, context);
+//};
+//
+//Get.prototype.init = function(select, context){
+//    context = context || document;
+//    var eleList = document.querySelectorAll(select, context);
+//    this.length = eleList.length;
+//    for(var i = 0; i < this.length; i++){
+//        this[i] = eleList[i];
+//    }
+//    return this;
+//}
+//
+//Get.prototype.each = function (fn){
+//    var length = this.length;
+//    for(i = 0; i < length; i++){
+//        fn.call(this[i]);
+//    };
+//    return this;
+//};
+//
+//Get.prototype.hide = function(){
+//    //console.log(this);//这里的this指向的是实例对象，实例对象有3个dom元素
+//    this.each(function (){
+//        this.style.display = 'none';//但是这里的this要指向每一个dom元素，把他们隐藏
+//        //console.log(this);//这里会输出3次，分别是3个dom元素
+//    })
+//}
+//
+//var $ = function(select, context){
+//    return new Get(select, context);
+//};
+//
+////console.log($('h4'));
+//$('h4').hide();
+
+// ---- 9.Get换成$.fn, $.fn是构造函数
+//var $ = function(select, context){
+//    //return new Get(select, context);
+//    return new $.fn.init(select, context);
+//};
+//
+//var Get = function (select, context) {
+//    //return this.init(select, context);
+//};
+//
+//$.fn = Get.prototype;
+//
+//$.fn.init = function(select, context){
+//    context = context || document;
+//    var eleList = document.querySelectorAll(select, context);
+//    this.length = eleList.length;
+//    for(var i = 0; i < this.length; i++){
+//        this[i] = eleList[i];
+//    }
+//    console.log(this, '---init');
+//    return this;
+//}
+//
+//$.fn.each = function (fn){
+//    var length = this.length;
+//    for(i = 0; i < length; i++){
+//        fn.call(this[i]);
+//    };
+//    return this;
+//};
+//
+//$.fn.hide = function(){
+//    //console.log(this);//这里的this指向的是实例对象，实例对象有3个dom元素
+//    this.each(function (){
+//        this.style.display = 'none';//但是这里的this要指向每一个dom元素，把他们隐藏
+//        //console.log(this);//这里会输出3次，分别是3个dom元素
+//    })
+//}
+//
+//console.log($('h4'));
+////$('h3').hide();
+
+// ---- 10.修改原型链指向，把构造函数的原型对象，赋值给 -> 构造函数的原型对象上面init方法的原型对象
+var $ = function(select, context){
+    return new $.fn.init(select, context);
+};
+
+$.fn = $.prototype;
+
+$.fn.init = function(select, context){
+    context = context || document;
+    var eleList = document.querySelectorAll(select, context);
+    this.length = eleList.length;
+    for(var i = 0; i < this.length; i++){
+        this[i] = eleList[i];
+    }
+    console.log(this, '---init');
+    return this;
+}
+
+$.fn.each = function (fn){
+    var length = this.length;
+    for(i = 0; i < length; i++){
+        fn.call(this[i]);
+    };
+    return this;
+};
+
+$.fn.hide = function(){
+    //console.log(this);//这里的this指向的是实例对象，实例对象有3个dom元素
+    this.each(function (){
+        this.style.display = 'none';//但是这里的this要指向每一个dom元素，把他们隐藏
+        //console.log(this);//这里会输出3次，分别是3个dom元素
+    })
+}
+
+console.log($('h3'));
+//$('h3').hide();
+</script>
