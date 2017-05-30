@@ -2,9 +2,6 @@
 jqueryDemo
 
 ```javascript
-/**
- * Created by luogege on 2017.04.17.
- */
 function loadTree(tData){
     var ul = $('<ul>');
     for(var i=0; i<tData.length; i++){
