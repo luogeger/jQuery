@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        *{
+            padding: 0;
+            margin: 0;
+        }
+        #box{
+            width: 100%;
+            height: 150px;
+            border: 1px solid #ff0000;
+            position: fixed;
+            top: 0px;
+        }
+        
+        .other{
+            height: 1500px;
+        }
+    </style>
+</head>
+<body>
+    <div id="box">
+            sticky header
+    </div>
+    <div class="other">
+        <div class="h2">
+            <h2>123</h2>
+            <h2>123</h2>
+            <h2>123</h2>
+            <h2>123</h2>
+            <h2>123</h2>
+            <h2>123</h2>
+        </div>
+    </div>
+    
+    
+</body>
+</html>
+<script src="../jquery-1.12.4.min.js"></script>
+<script>
+    /*
+    *  id 顶部的元素
+    *  box 移动距离的相对元素
+    *  color 格式必须是rgba(0,0,0,0), 最后一个是0或1, 不能是小数
+    * */
+    function sticky (id, box, color) {//rgba(201,21,35,0)
+        var idH =document.querySelector(id).offsetHeight;// 获取 id 的高度
+        document.querySelector('body').style.paddingTop = idH + 'px'; // 给body设置style
+        
+        var idEle = document.querySelector(id);// 要修改的 顶部通栏
+        idEle.style.backgroundColor = color;// 设置的透明度 为0
+
+        var boxH =document.querySelector(box).offsetHeight;// 获取 移动 的高度
+        var colors = color.substring(color.length - 2 , 0); // 截取字符串
+        var flag = color.substring(color.length - 2 , color.length - 1); // 获取是 1 还是 0
+        
+        window.onscroll = function (e) {
+            var scrollDistance = window.document.body.scrollTop;
+            if( flag == 1){
+                //  10   10   10   10   10   10
+                //  0    1    2    5    7    10
+                //  1    0.9  0.8  0.5  0.3  0
+                idEle.style.backgroundColor = colors + '0)';// 设置给 顶部 通栏的背景颜色即可
+                if(scrollDistance == 0){
+                    idEle.style.backgroundColor = color;// 设置给 顶部 通栏的背景颜色即可
+                }
+            }
+            else{
+                var percent =  scrollDistance / boxH;// 计算出 一个 0-1的值 --> 透明变不透明
+                if (percent>1) {// 避免 设置 超过1的值
+                    percent=1;
+                }
+                idEle.style.backgroundColor = colors + percent+')';// 设置给 顶部 通栏的背景颜色即可
+            }
+        }
+    }
+
+    sticky('#box', '.h2', 'rgba(255,255,0,1)')
+   
+</script>
+
+
