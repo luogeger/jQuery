@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="../jquery-1.12.4.min.js"></script>
+    <script>
+        var node = $('<div></div>');
+        console.log(node);
+    </script>
+    
+</head>
+<body>
+
+</body>
+</html>
+<script>
+//    (function (){
+//       var $ = function (name, age, job){
+//           return new $.prototype.init(name, age, job);
+//       };
+//
+//       $.prototype = {
+//           init: function (name, age, job){
+//               this.name = name;
+//               this.age = age;
+//               this.job = job;
+//           }
+//       }
+//
+//        $.prototype.init.prototype = {
+//           constructor: $.prototype.init, // 这里有坑，不是init，是$.prototype.init
+//           say: function (){
+//               console.log(this.name);
+//           },
+//           read: function (){
+//               console.log(this.age);
+//           }
+//       }
+//       return window.$ = $;
+//    })();
+//
+//    var lucy = $('lucy', 18, 'java');
+//    console.log(lucy);
+</script>
+
+<!--
+    1. 执行$函数, 返回一个instance, 返回的init的instance, init是 $.prototype上面的方法
+    2. 此时要在init的prototype上面扩展方法
+    3. 此时此刻要就可以看明白 $.fn.init.prototype = $.fn;
+        现在把 init.prototype 上面所有的方法，全部都放到 $.prototype上面
+        所以，要改变init.prototype的指向，$.prototype.init.prototype = $.prototype;
+        在下面重写一遍，测试
+-->
+
+<script>
+    (function (){
+        var $ = function  (name, age, job){
+            return new $.prototype.init(name, age, job);
+        };
+
+        
+        
+        $.prototype = {
+            constructor: $,
+            init: function (name, age, job){
+                this.name = name;
+                this.age = age;
+                this.job = job;
+            },
+            say: function (){
+                console.log(this.name);
+            },
+            read: function (){
+                console.log(this.age);
+            }
+        }
+
+        $.prototype.init.prototype = $.prototype;
+        
+        return window.$ = $;
+    })();
+    
+    var lucy = $('lucy', 19, 'java');
+    console.log(lucy);
+</script>
+
