@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
-    <script src="../jquery-1.12.4.min.js"></script>
+    <script src=""></script>
     <script>
-        var node = $('<div></div>');
-        console.log(node);
+        //var node = $('<div></div>');
+        //console.log(node);
     </script>
     
 </head>
@@ -67,6 +67,8 @@
                 this.name = name;
                 this.age = age;
                 this.job = job;
+                
+                return this;
             },
             say: function (){
                 console.log(this.name);
@@ -81,7 +83,24 @@
         return window.$ = $;
     })();
     
+    $.extend = $.prototype.extend = function (obj){
+        var key;
+        for(key in obj){
+            this[key] = obj[key];
+        }
+        
+    };
+    
+    $.prototype.extend({
+        add: function (a,b){
+            return a + b;
+        },
+        each: function (arr){
+        
+        }
+    });
     var lucy = $('lucy', 19, 'java');
     console.log(lucy);
+    
 </script>
 
