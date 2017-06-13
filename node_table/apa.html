@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        table{
+            width: 600px;
+            border: 1px solid #639D3C;
+            margin: 50px auto;
+            cellspacing: 0px;
+            border-collapse: collapse;
+            background-color: #F8F8F8;
+        }
+        caption{
+            font: 30px/50px "microsoft yahei";
+        }
+        tr{
+            height: 30px;
+            text-align: center;
+        }
+        th{
+            border: 1px solid #28CA41;
+            font: 16px "microsoft yahei";
+        }
+        td{
+            border: 1px solid #28CA41;
+            font: 16px "microsoft yahei";
+        }
+        .edit, .delete, #create{
+            color: #551A8B;
+            cursor: pointer;
+            display: inline-block;
+            height: 26px;
+            line-height: 26px;
+            width: 60px;
+            /*background-color: deepskyblue;*/
+            border-radius: 6px;
+        }
+        .edit:hover {
+            background-color: #00CC00;
+            color: #ffffff;
+        }
+        .delete:hover {
+            background-color: #ff0000;
+            color: #ffffff;
+        }
+        #create{
+            cursor: pointer;
+        }
+        #create:hover{
+            background-color: #ECC849;
+            color: #000;
+        }
+    </style>
+</head>
+<body>
+    <table>
+        <caption>召唤师峡谷</caption>
+        <thead>
+        <tr>
+            <th>RANK</th>
+            <th>NAME</th>
+            <th>ALIAS</th>
+            <th>PLACE</th>
+            <th>INFO</th>
+            <th>AMEND</th>
+        </tr>
+        </thead>
+        <tbody id="tbody">
+        <!--<tr>-->
+        <!--<td>1</td>-->
+        <!--<td>luogege</td>-->
+        <!--<td>18</td>-->
+        <!--<td>522933</td>-->
+        <!--<td>666</td>-->
+        <!--<td>-->
+        <!--<a href="#">编辑</a>-->
+        <!--<div class="box"></div>-->
+        <!--<a href="#">删除</a>-->
+        <!--</td>-->
+        <!--</tr>-->
+        </tbody>
+        <tfoot>
+        <tr>
+            <td align="center" colspan="6"><span id="create">添加</span> </td>
+        </tr>
+        </tfoot>
+        
+        <!-- 弹出层 -->
+        <div id="box" style="width: 300px; height: 200px; display: none; margin: 30px 50px; font: 400 20px microsoft yahei;">
+            <form id="form">
+                <input type="hidden" id="id" name="id">
+                Name：<input type="text" id="one" name="name">
+                <br>
+                Alias：<input type="text" id="two" name="alias">
+                <br>
+                Place：<input type="text" id="three" name="place">
+                <br>
+                Info：<input type="text" id="four" name="info">
+                <br>
+                <input type="button" id="save" value="保存">
+                <br>
+                <input type="button" id="cancel" value="取消">
+            </form>
+        </div>
+    </table>
+</body>
+</html>
+<script src="js/jquery-3.1.0.js"></script>
+<script src="js/layer.js"></script>
+<script src="js/template-native.js"></script>
+<script id="temp" type="text/html">
+    <%for(var i = 0; i < arr.length; i++){%>
+    <tr>
+        <td><%=i+1%></td>
+        <td><%=arr[i].name%></td>
+        <td><%=arr[i].alias%></td>
+        <td><%=arr[i].place%></td>
+        <td><%=arr[i].info%></td>
+        <td Mid="<%=arr[i].id%>">
+            <span class="edit">编辑</span>
+            <span class="delete">删除</span>
+        </td>
+    </tr>
+    <%}%>
+</script>
+<script>
+$(function (){
+    var layerDialog;// 给保存和取消事件时, 关闭透明层和弹窗
+    var flag = 0; // 点击保存时候的标记, 标记到底是 编辑的保存flag=2, 还是 添加的保存flag=1, 取消flag=0,
+    // ajax 获取数据
+    function loadData (){
+        var aload;
+        $.ajax({
+            type: 'get',
+            url: 'http://127.0.0.1:9999/allUser',
+            dataType: 'json',
+            beforeSend: function(){
+                aload = layer.load();
+            },
+            success: function(data){
+                layer.close(aload);
+                var abc = template('temp', {arr: data} );
+                $('tbody').html(abc);
+
+            },
+            error: function(){
+                layer.close(aload);
+                layer.msg('出现错误', function(){
+                    //关闭后的操作
+                });
+            }
+        });
+    };
+    loadData();// ajax 获取数据
+
+    // 清空添加文本框
+    function clearTxt(){
+        $('#form input[type=text]').val('');
+            $('#one').val('')
+            $('#two').val('')
+            $('#three').val('')
+            $('#four').val('')
+        
+    };
+    
+    // 1.删除数据
+    $('#tbody').on('click', '.delete', function (){
+        var that = this;
+        layer.msg('确定删除？',
+            {
+                time:  0, //不自动关闭
+                btn:  ['yes', 'no'],
+                yes: function (index){
+                        var id = $(that).parent().attr('Mid');
+                        $.getJSON('http://127.0.0.1:9999/delete', {id:id}, function (res){
+                            loadData();
+                            layer.close(index);// index --> 在btn这个数组 -> 弹窗消失
+                        });
+                     },
+            }); //msg end
+    });
+    
+    // 2.添加数据
+    $('#create').on('click', function (){
+        layerDialog = layer.open({
+            type: 1,
+            shade: 0.4,
+            closeBtn: false,
+            title: ['增加召唤师', "font: 20px microsoft yahei" ], //不显示标题
+            content: $('#box'), //捕获的DOM元素
+            cancel: function (){
+                //layer.msg('捕获就是从页面已经存在的元素上，包裹layer的结构', {time: 5000, icon:6});
+            }
+        })
+    });
+    
+    // 3.保存 - 添加数据
+    $('#save').click(function (){
+        // 保存时统一的数据
+        var data = $("#form").serialize();
+
+        // 点击保存后，统一执行的函数
+        function save (){
+            layer.close(layerDialog); //透明层和弹窗取消,
+            loadData();// ajax 获取数据
+            clearTxt();// 清空添加文本框
+            flag = 0; //标记为0
+        };
+        
+        // 判断是添加保存，还是编辑保存
+        if(flag === 1){
+            $.post('http://127.0.0.1:9999/create', data, function () {
+                save();
+            });
+        }else if(flag === 2){
+            $.post('http://127.0.0.1:9999/update', data, function (){
+                save();
+            })
+        }
+        
+        
+        
+})
+    
+    // 4.取消 -- 添加数据
+    $('#cancel').click(function (){
+        layer.close(layerDialog); //透明层和弹窗取消
+        clearTxt();// 清空添加文本框
+    });
+    
+    
+    // 5.修改数据
+    // 5.1 根据用户id, 发请求拿到数据, 渲染到弹窗
+    // 5.2 然后在发请求, 保存数据
+    $('#tbody').on('click', '.edit', function (){
+        flag = 2; //修改标记
+        // 1.先有弹出层
+        layerDialog = layer.open({
+            type: 1,
+            shade: 0.4,
+            closeBtn: false,
+            title: ["修改召唤师","font: 20px microsoft yahei"], //不显示标题
+            content: $('#box'), //捕获的元素
+            cancel: function(){
+                //layer.msg('捕获就是从页面已经存在的元素上，包裹layer的结构', {time: 5000, icon:6});
+            }
+        });
+
+        // 2.数据渲染都页面
+        var id = $(this).parent().attr('Mid');
+        $.getJSON('http://127.0.0.1:9999/getUserById', {id: id}, function (res){
+            $('#one').val(res.name)
+            $('#two').val(res.alias)
+            $('#three').val(res.place)
+            $('#four').val(res.info)
+        });
+
+        // 3.把用户id绑定到hidden的input
+        $('input[type=hidden]').val(id);
+    });
+
+    
+    
+}); // end
+</script>

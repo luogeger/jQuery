@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>index</title>
+    <style>
+        table{
+            width: 600px;
+            border: 1px solid #639D3C;
+            margin: 50px auto;
+            cellspacing: 0px;
+            border-collapse: collapse;
+            background-color: #F8F8F8;
+        }
+        caption{
+            font: 30px/50px "microsoft yahei";
+        }
+        tr{
+            height: 30px;
+            text-align: center;
+        }
+        th{
+            border: 1px solid #28CA41;
+            font: 16px "microsoft yahei";
+        }
+        td{
+            border: 1px solid #28CA41;
+            font: 16px "microsoft yahei";
+        }
+        #update, #delete, #create{
+            color: #551A8B;
+            cursor: pointer;
+            display: inline-block;
+            height: 26px;
+            line-height: 26px;
+            width: 60px;
+            /*background-color: deepskyblue;*/
+            border-radius: 6px;
+        }
+        #update:hover {
+            background-color: #00CC00;
+            color: #ffffff;
+        }
+        #delete:hover {
+            background-color: #ff0000;
+            color: #ffffff;
+        }
+        #create{
+            cursor: pointer;
+        }
+        #create:hover{
+            background-color: #ECC849;
+            color: #000;
+        }
+    </style>
+    <script src="js/jquery-3.1.0.js"></script>
+    <script src="js/layer.js"></script>
+    <script src="js/template-native.js"></script>
+    <!--模板引擎-->
+    <script id="temp" type="text/html">
+        <%for(var i = 0; i < arr.length; i++){%>
+            <tr>
+                <td><%=i+1%></td>
+                <td><%=arr[i].name%></td>
+                <td><%=arr[i].alias%></td>
+                <td><%=arr[i].place%></td>
+                <td><%=arr[i].info%></td>
+                <td Mid="<%=arr[i].id%>">
+                    <span id="update">编辑</span>
+                    <span id="delete">删除</span>
+                </td>
+            </tr>
+        <%}%>
+    </script>
+</head>
+<body>
+<table>
+    <caption>召唤师峡谷</caption>
+    <thead>
+        <tr>
+            <th>RANK</th>
+            <th>NAME</th>
+            <th>ALIAS</th>
+            <th>PLACE</th>
+            <th>INFO</th>
+            <th>AMEND</th>
+        </tr>
+    </thead>
+    <tbody id="tbody">
+    <!--<tr>-->
+        <!--<td>1</td>-->
+        <!--<td>luogege</td>-->
+        <!--<td>18</td>-->
+        <!--<td>522933</td>-->
+        <!--<td>666</td>-->
+        <!--<td>-->
+            <!--<a href="#">编辑</a>-->
+            <!--<div class="box"></div>-->
+            <!--<a href="#">删除</a>-->
+        <!--</td>-->
+    <!--</tr>-->
+    </tbody>
+    <tfoot>
+        <tr>
+            <td align="center" colspan="6"><span id="create">添加</span> </td>
+        </tr>
+    </tfoot>
+
+    <div id="box" style="width: 300px; height: 200px; display: none; margin: 30px 50px; font: 400 20px microsoft yahei;">
+        <form id="form">
+            <input type="hidden" id="id" name="id">
+            Name：<input type="text" id="one" name="name">
+            <br>
+            Alias：<input type="text" id="two" name="alias">
+            <br>
+            Place：<input type="text" id="three" name="place">
+            <br>
+            Info：<input type="text" id="four" name="info">
+            <br>
+            <input type="button" id="save" value="保存">
+            <br>
+            <input type="button" id="cancel" value="取消">
+        </form>
+    </div>
+</table>
+</body>
+</html>
+<script>
+    $(function(){
+        // 清空文本框的函数 -- 保存数据 和 取消添加 时取消文本框信息
+        function clearTxt(){
+            $("#form input[type=text]").val("");
+            //console.info($("#form input[type=text]").val());
+        };
+
+        //ajax--函数
+        function loadData(){
+            $.ajax({
+                type: 'get',
+                url: 'http://127.0.0.1:9999/lol',
+                dataType: 'json',
+                beforeSend: function(){
+                    aload = layer.load();
+                },
+                success: function(data){
+                    layer.close(aload);
+                    var abc = template('temp', {arr: data} );
+                    $('tbody').html(abc);
+
+                },
+                error: function(){
+                    layer.close(aload);
+                    layer.msg('出现错误', function(){
+                        //关闭后的操作
+                    });
+                }
+            });
+        };
+
+        loadData();//ajax 初始化
+
+        //delete事件 -- 动态创建的元素用事件委托
+        $('#tbody').on('click', '#delete' , function(){
+            var that = this;//要删除这行数据，要找到所在父元素上面绑定的id，后面回调要获取这个dom元素
+            layer.msg('你确定删除吗？', {
+                time: 0 //不自动关闭
+                ,btn: ['必须滴', '雅蠛蝶']
+                ,yes: function(index){
+                    layer.close(index);
+
+                    //开始删除数据
+                    var Mid = $(that).parent().attr('Mid');
+                    $.getJSON('http://127.0.0.1:9999/lol/delete', {id: Mid}, function(data){
+                        //删除成功，重新加载
+                        loadData();
+//                            layer.msg(' O.o', {
+//                                icon: 1
+//                                ,btn: ['删除成功']
+//                            });
+
+                    });
+
+                }
+            });
+
+        });
+
+        //update--事件 -- 事件委托
+        $('#tbody').on('click', '#update', function (){
+        
+        })
+        
+        //create--事件
+        var layerIndex;
+        $('#create').on('click', function(){
+            layerIndex = layer.open({
+                type: 1,
+                shade: 0.4,
+                closeBtn: false,
+                title: ["添加召唤师","font: 20px microsoft yahei"], //不显示标题
+                content: $('#box'), //捕获的元素
+                cancel: function(){
+                    //layer.msg('捕获就是从页面已经存在的元素上，包裹layer的结构', {time: 5000, icon:6});
+                }
+            });
+            //获取添加信息
+
+        });
+
+        //cancel--事件: 关闭对话框，要给对话框一个变量接收，还不能局部变量
+        $('#cancel').on('click', function(){
+            layer.close(layerIndex);
+            clearTxt();
+        });
+
+        //save--事件：
+        $('#save').on('click', function(){
+            var data = $("#form").serialize();//获取post数据，name=luo&alias=132
+            $.post('http://127.0.0.1:9999/lol/create', data, function(data){
+                //console.info(data);
+                layer.close(layerIndex);
+                loadData();
+                clearTxt();
+            })
+        });
+        
+        
+        
+
+    });//入口函数
+</script>
