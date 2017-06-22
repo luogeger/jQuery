@@ -1,3 +1,6 @@
+- 用node命令行看段子
+
+
 ```
 $ mkdir joke-cli
 $ cd joke-cli
