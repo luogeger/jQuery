@@ -4,13 +4,16 @@
     <meta charset="UTF-8">
     <title>Title</title>
     <style>
-        table{
+        #tableId{
             width: 600px;
             border: 1px solid #639D3C;
             margin: 50px auto;
             cellspacing: 0px;
             border-collapse: collapse;
             background-color: #F8F8F8;
+        }
+        #tableId th{
+            cursor: pointer;
         }
         caption{
             font: 30px/50px "microsoft yahei";
@@ -55,19 +58,19 @@
     </style>
 </head>
 <body>
-    <table>
+    <table id="tableId">
         <caption>召唤师峡谷</caption>
         <thead>
-        <tr>
-            <th>RANK</th>
-            <th>NAME</th>
-            <th>ALIAS</th>
-            <th>PLACE</th>
-            <th>INFO</th>
-            <th>AMEND</th>
-        </tr>
+            <tr>
+                <th>RANK</th>
+                <th>NAME</th>
+                <th>ALIAS</th>
+                <th>PLACE</th>
+                <th>INFO</th>
+                <th>AMEND</th>
+            </tr>
         </thead>
-        <tbody id="tbody">
+        <tbody id="bodyId">
         <!--<tr>-->
         <!--<td>1</td>-->
         <!--<td>luogege</td>-->
@@ -129,7 +132,9 @@
 $(function (){
     var layerDialog;// 给保存和取消事件时, 关闭透明层和弹窗
     var flag = 0; // 点击保存时候的标记, 标记到底是 编辑的保存flag=2, 还是 添加的保存flag=1, 取消flag=0,
-    // ajax 获取数据
+    /*
+    *   ajax 获取数据
+    * */
     function loadData (){
         var aload;
         $.ajax({
@@ -139,10 +144,10 @@ $(function (){
             beforeSend: function(){
                 aload = layer.load();
             },
-            success: function(data){
+            success: function(datas){
                 layer.close(aload);
-                var abc = template('temp', {arr: data} );
-                $('tbody').html(abc);
+                var joinStr = template('temp', {arr: datas} );
+                $('#bodyId').html(joinStr);
 
             },
             error: function(){
@@ -155,7 +160,9 @@ $(function (){
     };
     loadData();// ajax 获取数据
 
-    // 清空添加文本框
+    /*
+    *   清空添加文本框
+    * */
     function clearTxt(){
         $('#form input[type=text]').val('');
             $('#one').val('')
@@ -165,8 +172,10 @@ $(function (){
         
     };
     
-    // 1.删除数据
-    $('#tbody').on('click', '.delete', function (){
+    /*
+    *   1.删除数据
+    * */
+    $('#bodyId').on('click', '.delete', function (){
         var that = this;
         layer.msg('确定删除？',
             {
@@ -182,8 +191,12 @@ $(function (){
             }); //msg end
     });
     
-    // 2.添加数据
+    
+    /*
+    *   2.添加数据
+    * */
     $('#create').on('click', function (){
+        flag = 1;
         layerDialog = layer.open({
             type: 1,
             shade: 0.4,
@@ -196,11 +209,15 @@ $(function (){
         })
     });
     
-    // 3.保存 - 添加数据
+    
+    /*
+    *   3.保存 - 添加数据
+    * */
     $('#save').click(function (){
+        console.log('click');
         // 保存时统一的数据
         var data = $("#form").serialize();
-
+        console.log(data);
         // 点击保存后，统一执行的函数
         function save (){
             layer.close(layerDialog); //透明层和弹窗取消,
@@ -222,19 +239,24 @@ $(function (){
         
         
         
-})
+});
     
-    // 4.取消 -- 添加数据
+    
+    /*
+    *   4.取消 -- 添加数据
+    * */
     $('#cancel').click(function (){
         layer.close(layerDialog); //透明层和弹窗取消
         clearTxt();// 清空添加文本框
     });
     
     
-    // 5.修改数据
-    // 5.1 根据用户id, 发请求拿到数据, 渲染到弹窗
-    // 5.2 然后在发请求, 保存数据
-    $('#tbody').on('click', '.edit', function (){
+    /*
+    *   5.修改数据
+    *       5.1 根据用户id, 发请求拿到数据, 渲染到弹窗
+    *       5.2 然后在发请求, 保存数据
+    * */
+    $('#bodyId').on('click', '.edit', function (){
         flag = 2; //修改标记
         // 1.先有弹出层
         layerDialog = layer.open({
@@ -260,8 +282,33 @@ $(function (){
         // 3.把用户id绑定到hidden的input
         $('input[type=hidden]').val(id);
     });
-
     
+
+    /*
+    *   6.排序
+    *   index： 对应的列
+    *   column: 对应数据库字段名
+    *   sort: 升序 or 降序
+    * */
+    var sortFlag = 'A';
+    function sort (index, column){
+        
+        $('#tableId th').eq(index).click(function (){
+            sortFlag = sortFlag == 'A' ? 'Z' : 'A';
+            $.getJSON('http://127.0.0.1:9999/sort', {c:column, s:sortFlag}, function (datas){
+                var joinStr = template('temp', {arr: datas} );
+                $('#bodyId').html(joinStr);
+            })
+        })
+    };
+    
+    sort(1, 'name');// name
+    
+    sort(2, 'alias');// alias
+    
+    sort(3, 'place');//place
+    
+    sort(4, 'info');//info
     
 }); // end
 </script>

@@ -110,10 +110,30 @@ app.post('/update', (req, res) => {// 和delete一样, 先从数据库拿到obj,
 })
 
 
-// 7.jsonP解决跨域
 
-// 8.用户出现异常数据, 服务器就挂了,
+/*
+*   7.jsonP解决跨域
+* */
+
+
+/*
+*   8.用户出现异常数据, 服务器就挂了
+* */
     // 服务器开启只有一个node进程, 有了守护进程, 就相当于一个web服务器开启了2个node进程
     // cannot set property 'name' of undefined, -> 判断从数据库拿回来的obj 有没有值
 
 
+/*
+*   9.排序
+* */
+
+app.get('/sort', (req, res) => {
+    let column = req.query.c;
+    let sort = req.query.s;
+
+    req.models.luo.find({}, [column, sort], (err, obj) => {
+        if(err) throw err;
+        res.send(obj)
+    })
+
+})
