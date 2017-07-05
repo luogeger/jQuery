@@ -17,7 +17,7 @@ app.use('/www',express.static('www'));
 
 /*
 *   xtpl 演示
-*   访问根目录的时候，显示登陆页面
+*   访问根目录的时候，显示sign.html
 * */
 app.get('/', (req, res) => {
     xtpl.renderFile('views/sign.html', (err, html) => {
