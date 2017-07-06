@@ -21,3 +21,5 @@
 
 - 4.全屏背景图的切换: jquery控件 - supersized.js
      - 背景图片找不到，要改 ``supersized-init.js``里面的配置
+     
+- 5.创建路由，加载路由，测试路由
