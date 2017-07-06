@@ -28,12 +28,28 @@ app.get('/', (req, res) => {
 /*  3.
 *   加载路由
 * */
+// const adminRouter = require('./routers/admin.js');
+// const homeRouter = require('./routers/home.js');
+//
+// app.use('/admin', adminRouter);
+// app.use(homeRouter);
 
-const adminRouter = require('./routers/admin.js');
-const homeRouter = require('./routers/home.js');
 
-app.use(adminRouter);
-app.use(homeRouter);
+/*  4.
+*   简化加载路由的步骤
+*   router里面的文件要加prefix
+* */
+const glob = require('glob');
+let files = glob.sync('./routers/*.js');
+//console.log(files);
+
+files.forEach((item) => {
+    const router = require(item);
+    //console.log(router.prefix);
+    app.use(router.prefix, router);
+})
+
+
 
 
 

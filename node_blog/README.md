@@ -23,3 +23,5 @@
      - 背景图片找不到，要改 ``supersized-init.js``里面的配置
      
 - 5.创建路由，加载路由，测试路由
+- 6.加载路由的代码不放在app.js, 就需要知道routers里面有多少js文件, 以及对应的路径
+    - ``npm i glob --save`` 能够获取到routers里面所有文件的路径

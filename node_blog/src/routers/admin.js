@@ -2,7 +2,8 @@
 
 const express = require('express');
 let router = module.exports = express.Router();
+router.prefix = '/admin';
 
-router.get('/admin/index', (req, res) => {
-    res.send('admin - index');
+router.get('/blog/index', (req, res) => {
+    res.send('blog - index');
 })
