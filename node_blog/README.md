@@ -23,5 +23,37 @@
      - 背景图片找不到，要改 ``supersized-init.js``里面的配置
      
 - 5.创建路由，加载路由，测试路由
-- 6.加载路由的代码不放在app.js, 就需要知道routers里面有多少js文件, 以及对应的路径
+    - glob 加载 routers, 以及router.prefix
     - ``npm i glob --save`` 能够获取到routers里面所有文件的路径
+    
+- 6.配置 ``npm run dev``
+    - ``set NODE_ENV=dev && node index.js`` : 环境变量是没有" "
+    - ``require("./src/app.js")`` 模块被加载，就会执行这个文件
+        - src 和 dist 全部用绝对路径，  
+        - path.join is not a function , 改用字符串拼接 ``+``
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    

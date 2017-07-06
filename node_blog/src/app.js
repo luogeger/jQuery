@@ -5,12 +5,15 @@
 "use strict";
 const express = require('express');
 let app = express();
+const path = express('path'); // 获取 当前js文件运行的绝对路径 //console.log(path);console.log(__dirname);
 
 /*  1.
 *   设置静态资源的路径
-*   前面的'www', 表示在浏览器访问的路径，端口号后面要加上www/
+*   前面的'www', 表示在浏览器访问的路径，端口号后面要加上www
+*   - 使用绝对路径
 * */
-app.use('/www',express.static('www'));
+// app.use('/www',express.static('www'));
+app.use('/www',express.static(__dirname+'\\www'));
 
 
 /*  2.
@@ -19,7 +22,8 @@ app.use('/www',express.static('www'));
 * */
 const xtpl = require('xtpl');
 app.get('/', (req, res) => {
-    xtpl.renderFile('views/sign.html', (err, html) => {
+    xtpl.renderFile(__dirname+'\\views/sign.html', (err, html) => {
+        if(err) throw err;
         res.send(html);
     })
 });
@@ -40,7 +44,8 @@ app.get('/', (req, res) => {
 *   router里面的文件要加prefix
 * */
 const glob = require('glob');
-let files = glob.sync('./routers/*.js');
+// let files = glob.sync('./routers/*.js');
+let files = glob.sync(__dirname+'\\routers/*.js'); // routers 前面不用加 ./
 //console.log(files);
 
 files.forEach((item) => {
