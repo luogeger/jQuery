@@ -4,9 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "set NODE_ENV=dev && node index.js",
-    "dist": "set NODE_ENV=dist && node index.js"
+    "dist": "set NODE_ENV=dist && node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
@@ -14,6 +14,8 @@
   "dependencies": {
     "express": "^4.15.3",
     "glob": "^7.1.2",
+    "mysql": "^2.13.0",
+    "orm": "^3.2.3",
     "xtemplate": "^4.7.2",
     "xtpl": "^3.3.0"
   }
