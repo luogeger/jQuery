@@ -10,12 +10,12 @@ const path = express('path'); // 获取 当前js文件运行的绝对路径
 
 /*  1.
 *   设置静态资源的路径
-*   - app.use(express.static(__dirname)); .../src
-*   app.use('/www',express.static('www'));
+*
+*   app.use("/www", express.static(path.join(__dirname, "www")));
 * */
-app.use(express.static(__dirname));
-
-
+// app.use(express.static(__dirname));
+// app.use("/www", express.static(__dirname+"www"));
+app.use('/www', express.static('www'));
 /*  2.
 *   xtpl 演示 -- 测试用的
 *   访问根目录的时候，显示sign.html
