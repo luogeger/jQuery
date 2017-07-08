@@ -1,9 +1,78 @@
 "use strict";
 
+/*
+*
+* */
 const express = require('express');
+const controller = require('../controllers/home.js');
+
 let router = module.exports = express.Router();
 router.prefix = '/';
 
-router.get('/index', (req, res) => {
-    res.send('index');
-})
+
+router.get('', controller.index);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

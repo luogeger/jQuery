@@ -1,9 +1,68 @@
 "use strict";
 
+
+/*
+ *  get后面的是路径
+ * */
 const express = require('express');
+const controller = require('../controllers/admin');
 let router = module.exports = express.Router();
 router.prefix = '/admin';
 
-router.get('/blog/index', (req, res) => {
-    res.send('blog - index');
-})
+router.get('', controller.admin)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
