@@ -32,7 +32,9 @@
         - src 和 dist 全部用绝对路径，  
         - path.join is not a function , 改用字符串拼接 ``+``
     
-    
+- 7.控制器的加载视图
+    - 要在controller读取模板
+    - controller里面的index方法里面的 ``res.render()`` , response是没有这个方法的，需要通过一个中间件来注册这个方法，从而调用 ``xtpl``变的更简单
     
     
     
