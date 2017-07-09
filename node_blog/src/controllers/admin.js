@@ -9,7 +9,7 @@ let controller = module.exports;
 controller.postsPage = (req, res) => {
 
     if(req.session.user){
-        res.render('admin/index', (err, html) => {
+        res.render('admin/index', {user: req.session.user} , (err, html) => {
             if(err) throw err;
             res.send(html);
         })

@@ -25,7 +25,6 @@ controller.loginIn = (req, res) => {
     req.models.user.find({username: name, password: pwd}, (err, userInfo) => {
         if(err) throw err;
 
-        console.log(userInfo);
         if( userInfo && userInfo.length > 0){
             req.session.user = userInfo[0];
 
@@ -38,4 +37,12 @@ controller.loginIn = (req, res) => {
         }
     })
 
+}
+
+/*  退出
+*
+* */
+controller.loginOut = (req, res) => {
+    req.session.user = null;
+    res.redirect('/account/login');
 }

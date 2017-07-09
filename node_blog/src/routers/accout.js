@@ -11,7 +11,14 @@ router.prefix = '/account';
 // 显示登陆首页
 router.get('/login', controller.loginPage)
 
+
 /*  登陆接口
 *       - post 请求
 * */
 router.post('/login', controller.loginIn)
+
+
+/*  退出接口
+*       - get
+* */
+router.get('/loginOut', controller.loginOut)
