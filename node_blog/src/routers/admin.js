@@ -9,7 +9,7 @@ const controller = require('../controllers/admin');
 let router = module.exports = express.Router();
 router.prefix = '/admin';
 
-router.get('', controller.admin)
+router.get('/index', controller.admin)
 
 
 

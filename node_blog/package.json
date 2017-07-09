@@ -18,5 +18,8 @@
     "orm": "^3.2.3",
     "xtemplate": "^4.7.2",
     "xtpl": "^3.3.0"
+  },
+  "devDependencies": {
+    "body-parser": "^1.17.2"
   }
 }

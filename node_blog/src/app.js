@@ -72,6 +72,13 @@ app.use(orm.express('mysql://root:@localhost:3306/my_blog',{
     }
 }))
 
+/*  7.
+*   处理application/x-www-form-urlencoded的 parser
+*   此值的含义：post过来数据的格式是这个样子  id=5&name=zs
+* */
+const bodyparser = require("body-parser");
+app.use(bodyparser.urlencoded({ extended: false }));
+
 
 /*  4.
 *   简化加载路由的步骤

@@ -6,7 +6,12 @@
 const express = require('express');
 const controller = require('../controllers/accout')
 let router = module.exports = express.Router();
-router.prefix = '/login';
+router.prefix = '/account';
 
+// 显示登陆首页
+router.get('/login', controller.loginPage)
 
-router.get('', controller.login)
+/*  登陆接口
+*       - post 请求
+* */
+router.post('/login', controller.loginIn)

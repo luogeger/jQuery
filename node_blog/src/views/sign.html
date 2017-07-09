@@ -8,9 +8,9 @@
         <meta name="author" content="">
 
         <!-- CSS -->
-        <link rel="stylesheet" href="www/styles/resetsign.css">
-        <link rel="stylesheet" href="www/styles/supersized.css">
-        <link rel="stylesheet" href="www/styles/style.css">
+        <link rel="stylesheet" href="/www/styles/resetsign.css">
+        <link rel="stylesheet" href="/www/styles/supersized.css">
+        <link rel="stylesheet" href="/www/styles/style.css">
 
         <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
         <!--[if lt IE 9]>
@@ -23,12 +23,13 @@
 
         <div class="page-container">
             <h1>登录</h1>
-            <form action="" method="post">
+            <form id="formId" method="post">
                 <input type="text" name="username" class="username" placeholder="用户名">
                 <input type="password" name="password" class="password" placeholder="密码">
-                <button type="submit">提交</button>
+                <button id="login" type="submit">提交</button>
                 <div class="error"><span>+</span></div>
             </form>
+            
             <div class="connect">
                 <p>Or connect with:</p>
                 <p>
@@ -39,14 +40,36 @@
         </div>
 		
         <!-- Javascript -->
-        <script src="www/assets/jquery/jquery.min.js"></script>
-        <script src="www/scripts/supersized.3.2.7.min.js"></script>
-        <script src="www/scripts/supersized-init.js"></script>
-        <script src="www/scripts/scripts.js"></script>
+        <script src="/www/assets/jquery/jquery.min.js"></script>
+        <script src="/www/scripts/supersized.3.2.7.min.js"></script>
+        <script src="/www/scripts/supersized-init.js"></script>
+        <script src="/www/scripts/scripts.js"></script>
     </body>
 </html>
 <script>
-    $('')
+    $(function (){
+        $('#login').click(function (){
+            $.ajax({
+                type: 'post',
+                url: '/account/login',
+                dataType: 'json',
+                data: $('#formId').serialize(),
+                success: function (res){
+                    if(res.code == 1){
+                        console.log('success');
+                    }else{
+                        console.log('unknown');
+                    }
+                    
+                },
+                error: function (){
+                    console.log('error');
+                }
+            });
+            return false;
+        })
+        
+    })
 </script>
 
 
