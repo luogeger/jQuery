@@ -13,6 +13,7 @@
   "license": "ISC",
   "dependencies": {
     "express": "^4.15.3",
+    "express-session": "^1.15.3",
     "glob": "^7.1.2",
     "mysql": "^2.13.0",
     "orm": "^3.2.3",

@@ -41,6 +41,7 @@
 		
         <!-- Javascript -->
         <script src="/www/assets/jquery/jquery.min.js"></script>
+        <script src="/www/assets/layer/src/layer.js"></script>
         <script src="/www/scripts/supersized.3.2.7.min.js"></script>
         <script src="/www/scripts/supersized-init.js"></script>
         <script src="/www/scripts/scripts.js"></script>
@@ -56,14 +57,14 @@
                 data: $('#formId').serialize(),
                 success: function (res){
                     if(res.code == 1){
-                        console.log('success');
+                        layer.msg('success')
+                        location.href = '/admin/posts/index';
                     }else{
-                        console.log('unknown');
+                        layer.msg('unknown')
                     }
-                    
                 },
                 error: function (){
-                    console.log('error');
+                    layer.msg('error')
                 }
             });
             return false;
