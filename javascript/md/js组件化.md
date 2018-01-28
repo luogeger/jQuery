@@ -2,6 +2,8 @@
 
 > 实现一个组件，一个输入框里面字数的计数。
 
+- 本文出处[这里](https://github.com/purplebamboo/blog/issues/16)
+
 #### 最简陋的写法
 ```javascript
     $(function () {
@@ -276,3 +278,75 @@
     })
 
 ```
+
+
+#### 抽象出Base
+面向对象的好处是抽象出一个Base类。其他组件编写时都继承它。
+-  ``init`` 用来初始化属性
+-  ``render`` 用来处理渲染的逻辑
+-  ``bind`` 用来处理事件的绑定
+
+```javascript
+    // 抽象出Base类的实现代码如下
+    var Base = Class.extend({
+        init: function (config) {
+            // 自动保存配置项
+            this._config = config;
+            this.bind();
+            this.render();
+        },
+        
+        // get获取配置项 
+        get: function (key) {
+            return this._config[key];
+        },
+        
+        // set设置配置项
+        set: function (key, value) {
+            this._config[key] = value;
+        },
+        
+        bind: function () {
+            
+        },
+        
+        render: function () {
+            
+        },
+        
+        destroy: function () {
+            // 定义销毁的方法
+        }
+        
+    })// Base
+
+
+    // ===========================
+    var TextCount = Base.extend({
+        _getNum:function(){
+            return this.get('input').val().length;
+        },
+        bind:function(){
+            var self = this;
+            self.get('input').on('keyup',function(){
+                self.render();
+            });
+        },
+        render:function() {
+            var num = this._getNum();
+
+            if ($('#J_input_count').length === 0) {
+                this.get('input').after('<span id="J_input_count"></span>');
+            };
+
+            $('#J_input_count').html(num+'个字');
+
+        }
+    });
+
+    $(function() {
+        new TextCount({input:$("#J_input")});
+    })
+```
+- 直接实现一些固定的方法，bind，render就行了。其他的base会自动处理（这里只是简单处理了配置属性的赋值）。
+- 这里的init，bind，render就已经有了点生命周期的影子，组件都会具有这几个阶段，初始化，绑定事件，渲染。还可以加一个destroy销毁的方法，用来清理现场。
