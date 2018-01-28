@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>test</title>
+</head>
+<body>
+    <input type="text" id="J_input" val="1"/></body>
+</html>
+<script src="../../jquery-1.12.4.min.js"></script>
+<script>
+    var Class =
+    (function () {
+        var _mix =
+        function (r, s) {
+            for (var p in s) {
+                if (s.hasOwnProperty(p)) {
+                    r[p] = s[p]
+                }
+            }
+        };// mix
+
+
+        var _extend =
+        function () {
+            // 开关 用来使生成原型时，不调用真正的构成流程init
+            this.initPrototype = true;
+            var prototype = new this();
+            this.initPrototype = false;
+
+
+            var items = Array.prototype.slice.call(arguments) || [];
+            var item;
+
+            // 支持混入多个属性，并且支持{}，也支持Function
+            while (item = items.shift()) {
+                _mix(prototype, item.prototype || item);
+            }
+
+
+            // 这是返回的类，其实是返回的子类
+            function SubClass () {
+              if (!SubClass.initPrototype && this.init)
+                this.init.apply(this, arguments)// 调用init真正的构造函数
+            }
+
+            // 赋值原型链，完成继承
+            SubClass.prototype = prototype;
+
+            // 改变constructor引用
+            SubClass.prototype.constructor = SubClass;
+
+            // 为子类也添加extend方法
+            SubClass.extend = _extend;
+
+            return SubClass;
+
+        };// extend
+
+        var Class = function () {};// 超级父类
+        Class.extend = _extend;// 为超级父类添加extend方法
+
+        return Class;
+
+    })();
+
+    // ===========================
+    // 继承超级父类， 生成子类Animal, 并且混入一些方法。这些方法在Animal原型上
+    // 不仅支持混入{}, 还支持Function
+    var Animal =
+    Class.extend({
+        init: function (options) {
+            this.msg = options.msg;
+            this.type = "animal";
+        },
+
+        say: function () {
+            console.log(this.msg + "! I'am a " + this.type);
+        },
+    })// Animal
+
+    var Dog = Animal.extend({
+        init: function (options) {
+            Animal.prototype.init.call(this, options);
+            this.type = "dog";
+        }
+    })// Dog
+
+    new Dog({msg: 'hi'}).say()
+
+
+    // ===========================
+    // 实现代码如下
+    var TextCount = Class.extend({
+        init:function(config){
+            this.input = $(config.id);
+            this._bind();
+            this.render();
+        },
+
+        render:function() {
+            var num = this._getNum();
+
+            if ($('#J_input_count').length == 0) {
+                this.input.after('<span id="J_input_count"></span>');
+            };
+
+            $('#J_input_count').html(num+'个字');
+
+        },
+
+        _getNum:function(){
+            return this.input.val().length;
+        },
+
+        _bind:function(){
+            var self = this;
+            self.input.on('keyup',function(){
+                self.render();
+            });
+        }
+    })
+
+    $(function() {
+        new TextCount({
+            id:"#J_input"
+        });
+    })
+</script>

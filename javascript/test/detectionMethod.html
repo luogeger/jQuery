@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>检测方法</title>
+</head>
+<body>
+<script>
+    //任何对象都有一个toString() --> Object.prototype定义了toString()
+    var testObj = { say:function(){}};
+    console.log(testObj.toString());
+
+    //任何正则表达式都是继承自Array.prototype
+    //arr.__proto__ === Array.prototype
+    var arr = [10,20,30];
+    arr.toSting();
+
+    //------判断一个对象自身有没有属性，（判断属性是不是自身的，还是继承过来的）
+    //返回值：ture--> 表示属性是自身的
+    //       false--> 表示属性是继承过来的
+    //object.hasOwnProperty( property);
+    var o = {a:10};
+    console.log(o.hasOwnProperty('a'));
+    console.log(o.hasOwnProperty('hasOwnProperty'));
+    console.log(o.hasOwnProperty('toString'));
+
+    //---------判断当前对象是不是参数的原型对象
+    //Object.property.isPrototypeOf
+    //返回值：true 和 false
+    var o1 = {};
+    console.log(Object.prototype.isPrototypeOf(o1));
+
+    function Animal(){}
+    var dog = new Animal();
+    console.log(Animal.prototype.isPrototypeOf(dog));
+
+    //-----------对象的属性是否可以枚举--> for in遍历的时候不会扫描到他。
+    //Object.prototype.propertyIsEnumerable('');
+    var obj = { name:'luogeger',age:18,gender:'man'};
+    console.log(obj.propertyIsEnumerable('name'));//--> 是否枚举
+
+    //---其实我们还可以自定义一个不被枚举的属性，存在这个对象中，
+    Object.defineProperty(obj,'weight',{
+        enumerable:false,
+        value:'60kg'
+    });
+
+    console.log(obj);//--> 遍历到4个属性
+    for(var key in obj){
+        console.log(key);//--> 已经枚举不到，‘weight’
+    }
+    console.log(obj.propertyIsEnumerable('gender'));//-->true
+    console.log(obj.propertyIsEnumerable('weight'));//-->false
+
+    //-----------instanceof --> 全部都是小写的
+    //-- a instanceof b -->检测a 是不是 b的实例
+    function Animal(){}
+    var a1 = new Animal();
+    console.log(a1 instanceof Animal);//--> ture
+
+    var arr = [];
+    console.log(arr instanceof Array);
+    console.log(arr instanceof Object);
+
+    var rex = /word/;
+    console.log(rex instanceof RegExp);
+    console.log(rex instanceof Object);
+
+    //--推论：任何对象都是 Object 的实例。
+    console.log(arr instanceof Array);
+    console.log(Object.prototype.toString.call(arr));
+
+    //------  definePrototype -->设置属性能不能被重新赋值，
+    function Animal(){}
+    var a1 = new Animal();
+
+    Object.defineProperty(a1,'name',{
+        enumerable:false  //-->不可被枚举
+        ,value:"simple"
+        ,writable:true  //-->不可被重新赋值；默认是false
+        ,value:'luogeger'
+    });
+    console.log(a1.name);
+
+    //--get 获取属性，set 设置属性
+    var _age; //-->定义一个变量来接收设置的值
+    var a2 = { age:20 };
+    Object.defineProperty(a2,'age',{
+        get:function(){
+            _age = a2.age
+            return _age || 10;
+        }
+
+    });
+    console.log(a2.age);
+
+    //--
+    function Student(name,age,number){
+        this.name = name;
+        this.age = age;
+        this.number = number;
+        this.say = function(){};
+    }
+
+    Student.prototype.say = function(){};
+    Student.prototype.hello = function(){};
+
+    var s1 = new Student('王自健',30,555);
+
+
+
+
+
+</script>
+</body>
+</html>

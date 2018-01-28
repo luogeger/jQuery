@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>继承</title>
+</head>
+<body>
+
+</body>
+</html>
+<script>
+    //扩展原型对象（往原型对象中添加新的属性，实例就可以共享了）
+    function Person(){
+
+    }
+    var p1 = new Person();
+    Person.prototype.name = "luogeger";
+    Person.prototype.age = 20;
+    console.log(p1);
+
+    //--------替换原型对象：
+    //需要给实例添加多个属性，这样的或扩展起来就很麻烦了
+    //解决方案：--> 把默认的原型替换。
+    function Animal(){
+
+    }
+
+    Animal.protype={    //这一步就是替换了默认的原型对象。
+        constructor:Animal,
+        name:'nihao',
+        age : 20
+    }
+    var a1 = new Animal();
+    console.log(a1.constructor);
+
+    //-----替换原型和扩展原型的混合
+    function A1(){
+
+    }
+    A1.prototype.name='first';
+    var a1 = new A1();
+
+    A1.prototype={
+        constructor:A1,
+        age:18
+    }
+    var a2 = new A1();
+
+    console.log(a1.constructor === a2.constructor);
+    console.log(a1.age);
+    console.log(a2.age);
+
+    console.log(a1.constructor.prototype);
+    console.log(a1.constructor.prototype);
+    console.log(a1.__proto__);
+    console.log(a2.__proto__);
+
+    //    Object {age: 18}  --> 这是以上4种输出结果
+    //    Object {age: 18}
+    //    Object {name: "first"}
+    //    Object {age: 18}
+
+    //------------  混入( mixin )继承
+    //混入继承：将一个对象的功能拷贝到另一个对象中( target,source)-->直接传对象数据也可以
+    var o = {name:'luogeger',age:18};
+    var o2 = {gender:'man'};;
+    // for in source对象的功能，添加到target里面
+    //    for(var key in o){
+    //        o2[key] = o[key]
+    //    }
+    console.log(o2);
+
+    //-----封装extend方法
+    function extend(target,source){
+        for(var key in source){
+            target[key] = source[key];
+        }
+        return target;
+    }
+    extend(o,o2);
+    console.log(o);
+
+    //  -----  原型+混入继承
+    function Person(){}
+    extend(Person.prototype,{
+        name:'luogeger',
+        age:18,
+        gender:'man',
+        height:172,
+        width:'60kg'
+    });
+    var xiaoqing = new Person();
+    console.log(xiaoqing);
+
+
+</script>
+
+
+
+
+
+
+
+
+
+
+

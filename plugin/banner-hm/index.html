@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="css/index.css">
+</head>
+
+<body>
+    <div id="focus">
+        <div class="slider" data-index="0">
+            <!-- 轮播图主内容 -->
+            <ul class="slider-main">
+                <li class="slider-panel">
+                    <a href="javascript:;">
+                        <img src="images/57e379eaNd0019450.jpg"/>
+                    </a>
+                </li>
+                <li class="slider-panel">
+                    <a href="javascript:;">
+                        <img src="images/57e3a213Na5664990.jpg"/>
+                    </a>
+                </li>
+                <li class="slider-panel">
+                    <a href="javascript:;">
+                        <img src="images/57d8fbe7N805ce5a7.jpg"/>
+                    </a>
+                </li>
+                <li class="slider-panel">
+                    <a href="javascript:;">
+                        <img src="images/57e8ce7dNb5318721.jpg"/>
+                    </a>
+                </li>
+                <li class="slider-panel">
+                    <a href="javascript:;">
+                        <img src="images/57e4df77Nc1ee769d.jpg"/>
+                    </a>
+                </li>
+            </ul>
+            
+            <!-- 轮播图辅助内容 -->
+            <div class="slider-extra">
+                <!-- 轮播图导航 -->
+                <ul class="slider-nav">
+                    <li class="slider-item slider-selected">1</li>
+                    <li class="slider-item">2</li>
+                    <li class="slider-item">3</li>
+                    <li class="slider-item">4</li>
+                    <li class="slider-item">5</li>
+                </ul>
+                <!-- 轮播图左右控制按钮 -->
+                <div class="slider-page">
+                    <a href="javascript:void(0)" class="slider-prev">&lt;</a>
+                    <a href="javascript:void(0)" class="slider-next">&gt;</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+<script type="text/javascript" src="js/jquery-3.1.0.js"></script>
+<script>
+$(function() {
+    var data = [
+        {title: "Galaxy On7", src: "images/57e379eaNd0019450.jpg", href: "#Galaxy On7"},
+        {title: "Air Touch-X2", src: "images/57e379eaNd0019450.jpg", href: "#Air Touch-X2"},
+        {title: "满199减100", src: "images/57e379eaNd0019450.jpg", href: "#满199减100"},
+        {title: "奇趣", src: "images/57e379eaNd0019450.jpg", href: "#奇趣"},
+        {title: "国庆", src: "images/57e379eaNd0019450.jpg", href: "#国庆"},
+        {title: "360奇酷", src: "images/57e379eaNd0019450.jpg", href: "#360奇酷"}
+    ];
+
+    var parseData2HTML = function(data) {
+        data = data || [];
+        var sliderMainList = [],
+            sliderNavList = [];
+
+        sliderMainList.push('<ul class="slider-main">');
+        data.forEach(function(value) {
+            sliderMainList.push('<li class="slider-panel">');
+            sliderMainList.push('<a href="' + value.href + '">');
+            sliderMainList.push('<img src="' + value.src + '" title="' +value.title+ '"/>');
+            sliderMainList.push("</a>");
+            sliderMainList.push("</li>");
+        });
+        sliderMainList.push('</ul>');
+
+
+        sliderMainList.push('<ul class="slider-nav">');
+        data.forEach(function(value, index) {
+            if(index !== 1) {
+                sliderNavList.push('<li class="slider-item slider-selected">'+ index +'</li>');
+            } else {
+                sliderNavList.push('<li class="slider-item">'+ index +'</li>');
+            }
+        });
+        sliderMainList.push('</ul>');
+
+        return {
+            main: sliderMainList.join(""),
+            nav: sliderNavList.join("")
+        };
+    };
+
+    var buildHTML = function() {
+        var htmlList = [];
+        var dataHTML = parseData2HTML(data);
+        
+        htmlList.push('<div class="slider" data-index="0">');
+        htmlList.push(dataHTML.main);
+        htmlList.push('<div class="slider-extra">');
+        htmlList.push(dataHTML.nav);
+
+        htmlList.push('<div class="slider-page">');
+        htmlList.push('<a href="javascript:void(0)" class="slider-prev">&lt;</a>');
+        htmlList.push('<a href="javascript:void(0)" class="slider-next">&gt;</a>');
+        htmlList.push('</div>');
+        htmlList.push('</div>');
+
+        return htmlList.join("");
+    };
+
+    var $slider = $("#focus").find(".slider");
+    var $panel = $slider.find(".slider-panel");
+    var $prev = $slider.find(".slider-prev");
+    var $next = $slider.find(".slider-next");
+    var $navItem = $slider.find(".slider-item");
+
+    var showTime = 200;
+    var index = 0;
+    var getIndex = function() {
+        index = $slider.data("index");
+    };
+
+    var setIndex = function(i) {
+        if(i > 4) {
+            index = 0;
+        } else if(i < 0) {
+            index = 4;
+        } else {
+            index = i;
+        }
+
+        $slider.data("index", index || 0);
+        // console.log(index);
+    };
+
+    var slide = function(index) {
+        index = index || 0;
+        show( $panel.eq(index) );
+    };
+
+    var show = function($node) {
+        $node.fadeIn(showTime).siblings().fadeOut(showTime);
+    };
+
+    var selectNav = function(i) {
+        $navItem.eq(i).addClass("slider-selected")
+            .siblings().removeClass("slider-selected")
+    };
+
+    var bindEvent = function() {
+        $prev.on("click", function() {
+            getIndex();
+            index -= 1;
+            slide(index);
+            setIndex(index);
+            selectNav(index);
+        });
+
+        $next.on("click", function() {
+            getIndex();
+            index += 1;
+            setIndex(index);
+            slide( index );
+            selectNav(index);
+        });
+
+        $navItem.on("click", function() {
+            var index = parseInt($(this).html()) - 1;
+            slide(index);
+            setIndex(index);
+            selectNav(index);
+        });
+    };
+
+    var init = function() {
+        bindEvent();
+        $panel.hide().eq(0).show();
+        $("#focus").html( buildHTML() );
+    };
+
+    init();
+});
+</script>

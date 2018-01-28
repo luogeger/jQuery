@@ -28,7 +28,7 @@
 			var current = me.options.pageNo;
 			var total = me.options.totalPage;
 			var totalNum = me.options.totalSize;
-			content += "<a id=\"firstPage\">首页</a><a id='prePage'>上一页</a>";
+			content += "<a id='firstPage'>首页</a><a id='prePage'>上一页</a>";
 			//总页数大于6时候
 			if(total > 6) {
 				//当前页数小于5时显示省略号
