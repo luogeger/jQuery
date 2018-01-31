@@ -20,7 +20,7 @@
             if ($('#J_input_count').length === 0) {
                 input.after('<span id="J_input_count"></span>');
             }
-            ;
+            
             $('#J_input_count').html(num + '个字');
         }
     
@@ -91,10 +91,8 @@
 ```javascript
     var TextCount =
         (function(){ //私有方法,
-            var TextCountFun =
-                function(config){
-
-                };
+            var TextCountFun = function(config){
+            };
 
             var _bind =
                 function(that){
